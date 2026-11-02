@@ -1,0 +1,88 @@
+@Chatbot.API_HostAddress = http://localhost:5000
+
+### 1. Get All Learning Levels (Seed Data)
+GET {{Chatbot.API_HostAddress}}/api/v1/learninglevels
+Accept: application/json
+
+### 2. Create Child Profile (Toddler, Age 4 -> Level 1)
+POST {{Chatbot.API_HostAddress}}/api/v1/childprofiles
+Content-Type: application/json
+
+{
+  "firstName": "Leo",
+  "lastName": "Vance",
+  "dateOfBirth": "2022-05-15",
+  "currentLevelId": 1,
+  "preferredLanguage": "en",
+  "interests": "Dinosaurs, Building Blocks, Space",
+  "parentEmail": "parent.vance@example.com"
+}
+
+### 3. Send Message to Chatbot (Learning Mode - Answering Question)
+# Replace {{childId}} with the created child Id
+@childId = 00000000-0000-0000-0000-000000000000
+POST {{Chatbot.API_HostAddress}}/api/v1/chatbot/chat
+Content-Type: application/json
+
+{
+  "childId": "{{childId}}",
+  "sessionId": null,
+  "message": "The strawberry is red!",
+  "modeOverride": 1,
+  "levelOverride": null
+}
+
+### 4. Send Message to Chatbot (Conversation Mode)
+POST {{Chatbot.API_HostAddress}}/api/v1/chatbot/chat
+Content-Type: application/json
+
+{
+  "childId": "{{childId}}",
+  "sessionId": null,
+  "message": "Hello Buddy! I like puppies!",
+  "modeOverride": 2,
+  "levelOverride": null
+}
+
+### 5. Send Message to Chatbot (Engagement Mode - Riddle Game)
+POST {{Chatbot.API_HostAddress}}/api/v1/chatbot/chat
+Content-Type: application/json
+
+{
+  "childId": "{{childId}}",
+  "sessionId": null,
+  "message": "Let's play an animal game riddle!",
+  "modeOverride": 3,
+  "levelOverride": null
+}
+
+### 6. Send Message to Chatbot (Support Mode - Emotional Comfort)
+POST {{Chatbot.API_HostAddress}}/api/v1/chatbot/chat
+Content-Type: application/json
+
+{
+  "childId": "{{childId}}",
+  "sessionId": null,
+  "message": "I feel a little sad and tired today",
+  "modeOverride": null,
+  "levelOverride": null
+}
+
+### 7. Explicitly Switch Mode on Session
+# Replace {{sessionId}} with active session Id
+@sessionId = 00000000-0000-0000-0000-000000000000
+POST {{Chatbot.API_HostAddress}}/api/v1/chatbot/switch-mode
+Content-Type: application/json
+
+{
+  "sessionId": "{{sessionId}}",
+  "newMode": 3
+}
+
+### 8. Get Session Learning State & Recent Context
+GET {{Chatbot.API_HostAddress}}/api/v1/chatbot/sessions/{{sessionId}}/context
+Accept: application/json
+
+### 9. Get Child Progress Summary (Persisted Learning Topics & Mastery)
+GET {{Chatbot.API_HostAddress}}/api/v1/children/{{childId}}/progress/summary
+Accept: application/json

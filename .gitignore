@@ -1,0 +1,32 @@
+# .NET & Visual Studio
+bin/
+obj/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+*.nupkg
+
+# Node.js & Angular
+node_modules/
+dist/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.vscode/
+frontend/npm-debug.log*
+
+# SQL Server local data & logs
+*.mdf
+*.ldf
+*.log
+
+# Antigravity & IDE scratch files
+.gemini/
+debug_*.ps1
+e2e_test_suite.ps1
+
+# Environment secrets
+*.env
+appsettings.Development.json

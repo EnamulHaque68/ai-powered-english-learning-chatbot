@@ -1,0 +1,104 @@
+/* ============================================================
+   WonderKids English - Global Design System & Variables
+   Tailored for Under-7 Young Learners (Accessible, Vibrant, Joyful)
+   ============================================================ */
+
+:root {
+  --font-display: 'Fredoka', cursive, sans-serif;
+  --font-body: 'Quicksand', -apple-system, sans-serif;
+
+  /* Playful Child-Safe Palette */
+  --sky-blue: #0284c7;
+  --sky-light: #e0f2fe;
+  --sky-bright: #38bdf8;
+  --sunny-gold: #f59e0b;
+  --sunny-yellow: #fbbf24;
+  --bubble-pink: #ec4899;
+  --lavender: #8b5cf6;
+  --mint: #10b981;
+  --coral: #f97316;
+
+  /* High contrast text */
+  --text-dark: #0f172a;
+  --text-body: #1e293b;
+  --text-muted: #475569;
+  --text-white: #ffffff;
+
+  /* Card Surfaces & Glassmorphism */
+  --surface-white: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.88);
+  --border-glass: rgba(255, 255, 255, 0.95);
+  --shadow-playful: 0 10px 25px -5px rgba(2, 132, 199, 0.15), 0 8px 10px -6px rgba(2, 132, 199, 0.1);
+  --shadow-card: 0 14px 34px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04);
+  --shadow-bounce: 0 8px 0 rgba(0, 0, 0, 0.12);
+
+  /* Radius */
+  --radius-pill: 9999px;
+  --radius-card: 28px;
+  --radius-bubble: 22px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-body);
+  color: var(--text-dark);
+  font-size: 18px; /* High legibility for young readers */
+  line-height: 1.5;
+  background: radial-gradient(circle at 10% 20%, #e0f2fe 0%, #f0fdf4 40%, #fdf2f8 90%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Accessible interactive focus */
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 4px solid var(--sky-blue);
+  outline-offset: 3px;
+}
+
+/* Playful Keyframe Animations */
+@keyframes starPop {
+  0% { transform: scale(0.4) rotate(-20deg); opacity: 0; }
+  60% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes floatMascot {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1.5deg); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.85); }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(2, 132, 199, 0.05);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb {
+  background: #bae6fd;
+  border-radius: var(--radius-pill);
+  border: 2px solid #ffffff;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7dd3fc;
+}

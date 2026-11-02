@@ -1,0 +1,471 @@
+<!-- ============================================================
+     WonderKids English - Child-Centric Learning App Interface
+     ============================================================ -->
+
+<div class="app-viewport">
+
+  <!-- ================= TOP APP HEADER ================= -->
+  <header class="app-header" role="banner">
+    <div class="header-brand">
+      <div class="mascot-badge" aria-hidden="true">🐲</div>
+      <div class="brand-text">
+        <h1 class="brand-title">WonderKids English</h1>
+        <p class="brand-subtitle">AI Play & Learning for Under-7s</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Star Reward Pill -->
+      <div class="star-pill" [class.bounce-star]="starCelebration()" aria-label="Stars collected">
+        <span class="star-icon">⭐</span>
+        <span class="star-count">{{ totalStars() }} Stars</span>
+      </div>
+
+      <!-- Child Profile Chip -->
+      @if (activeChild(); as child) {
+        <button class="profile-chip" (click)="restartAdventure()" aria-label="Change child profile">
+          <span class="child-avatar">{{ selectedAvatar().emoji }}</span>
+          <span class="child-name">{{ child.firstName }}</span>
+          <span class="child-level-badge">L{{ activeLevel() }}</span>
+        </button>
+      }
+
+      <!-- Voice Read-Aloud Toggle -->
+      <button
+        class="icon-btn voice-btn"
+        [class.voice-active]="audio.isSpeechEnabled()"
+        (click)="toggleVoice()"
+        [attr.aria-label]="audio.isSpeechEnabled() ? 'Disable Voice Read-Aloud' : 'Enable Voice Read-Aloud'"
+        title="Toggle voice read-aloud">
+        <span>{{ audio.isSpeechEnabled() ? '🔊 Voice ON' : '🔇 Voice OFF' }}</span>
+      </button>
+
+      <!-- View Learning Progress -->
+      <button class="icon-btn progress-btn" (click)="toggleProgressModal()" aria-label="Open learning progress report">
+        <span>📊 Progress</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN LAYOUT ================= -->
+  <main class="main-content" role="main">
+
+    <!-- LEVEL CARDS & MODE BAR CONTAINER -->
+    <section class="controls-section" aria-label="Learning Levels and Modes">
+
+      <!-- L1 / L2 / L3 LEARNING CARDS -->
+      <div class="levels-deck">
+        <!-- Level 1: Toddler Explorer -->
+        <button
+          type="button"
+          class="level-card level-1"
+          [class.card-active]="activeLevel() === ChildLearningLevel.L1_Toddler"
+          (click)="setLevel(ChildLearningLevel.L1_Toddler)"
+          aria-label="Select Level 1: Toddler Explorer for ages 3 to 4">
+          <div class="card-glow"></div>
+          <div class="level-badge">Ages 3-4</div>
+          <div class="level-icon">🎨</div>
+          <div class="level-details">
+            <h2 class="level-name">L1: Toddler Explorer</h2>
+            <p class="level-desc">Colors, animal sounds & first words</p>
+          </div>
+          @if (activeLevel() === ChildLearningLevel.L1_Toddler) {
+            <span class="active-tag">Active 🌟</span>
+          }
+        </button>
+
+        <!-- Level 2: Early Learner -->
+        <button
+          type="button"
+          class="level-card level-2"
+          [class.card-active]="activeLevel() === ChildLearningLevel.L2_EarlyLearner"
+          (click)="setLevel(ChildLearningLevel.L2_EarlyLearner)"
+          aria-label="Select Level 2: Early Learner for ages 4 to 5">
+          <div class="card-glow"></div>
+          <div class="level-badge">Ages 4-5</div>
+          <div class="level-icon">📖</div>
+          <div class="level-details">
+            <h2 class="level-name">L2: Early Learner</h2>
+            <p class="level-desc">Phonics blends & simple word choices</p>
+          </div>
+          @if (activeLevel() === ChildLearningLevel.L2_EarlyLearner) {
+            <span class="active-tag">Active 🌟</span>
+          }
+        </button>
+
+        <!-- Level 3: Kinder Explorer -->
+        <button
+          type="button"
+          class="level-card level-3"
+          [class.card-active]="activeLevel() === ChildLearningLevel.L3_KinderExplorer"
+          (click)="setLevel(ChildLearningLevel.L3_KinderExplorer)"
+          aria-label="Select Level 3: Kinder Explorer for ages 5 to 6">
+          <div class="card-glow"></div>
+          <div class="level-badge">Ages 5-6</div>
+          <div class="level-icon">🚀</div>
+          <div class="level-details">
+            <h2 class="level-name">L3: Kinder Explorer</h2>
+            <p class="level-desc">Full sentences, story clues & rhymes</p>
+          </div>
+          @if (activeLevel() === ChildLearningLevel.L3_KinderExplorer) {
+            <span class="active-tag">Active 🌟</span>
+          }
+        </button>
+      </div>
+
+      <!-- INTERACTIVE MODE SWITCHER PILLS -->
+      <nav class="mode-bar" aria-label="Chatbot Interactive Modes">
+        <span class="mode-bar-label">Choose Fun Mode:</span>
+        <div class="mode-pills">
+          <button
+            type="button"
+            class="mode-pill mode-learning"
+            [class.pill-active]="activeMode() === ChatbotMode.Learning"
+            (click)="setMode(ChatbotMode.Learning)"
+            aria-label="Learning Mode: quizzes and micro-lessons">
+            <span class="pill-emoji">🎓</span>
+            <span class="pill-text">Learning Quiz</span>
+          </button>
+
+          <button
+            type="button"
+            class="mode-pill mode-conversation"
+            [class.pill-active]="activeMode() === ChatbotMode.Conversation"
+            (click)="setMode(ChatbotMode.Conversation)"
+            aria-label="Conversation Mode: friendly talk">
+            <span class="pill-emoji">💬</span>
+            <span class="pill-text">Chat with Buddy</span>
+          </button>
+
+          <button
+            type="button"
+            class="mode-pill mode-engagement"
+            [class.pill-active]="activeMode() === ChatbotMode.Engagement"
+            (click)="setMode(ChatbotMode.Engagement)"
+            aria-label="Engagement Mode: games and riddles">
+            <span class="pill-emoji">🎈</span>
+            <span class="pill-text">Games & Riddles</span>
+          </button>
+
+          <button
+            type="button"
+            class="mode-pill mode-support"
+            [class.pill-active]="activeMode() === ChatbotMode.Support"
+            (click)="setMode(ChatbotMode.Support)"
+            aria-label="Support Mode: comfort, hugs and help">
+            <span class="pill-emoji">🧸</span>
+            <span class="pill-text">Hugs & Help</span>
+          </button>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ================= CHAT STAGE ================= -->
+    <section class="chat-stage" aria-label="Interactive Dialogue Stage">
+
+      <!-- MASCOT STAGE BANNER -->
+      <div class="mascot-bar">
+        <div class="mascot-info">
+          <div class="mascot-avatar-large">🐲</div>
+          <div class="mascot-status">
+            <div class="mascot-name">Buddy the Learning Dragon</div>
+            <div class="status-indicator">
+              <span class="status-dot"></span>
+              <span class="status-text">Ready to learn & play with you!</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mascot-level-pill">
+          Level {{ activeLevel() }} &bull; {{ activeMode() === ChatbotMode.Learning ? 'Quiz Time' : activeMode() === ChatbotMode.Engagement ? 'Games' : activeMode() === ChatbotMode.Support ? 'Comfort' : 'Chat' }}
+        </div>
+      </div>
+
+      <!-- MESSAGES SCROLL CONTAINER -->
+      <div class="messages-container" #messagesContainer role="log" aria-live="polite">
+        @for (msg of messages(); track msg.id) {
+          <div class="message-row" [class.child-row]="msg.sender === 'child'" [class.bot-row]="msg.sender === 'bot'">
+
+            <!-- Bot Message -->
+            @if (msg.sender === 'bot') {
+              <div class="avatar-col">
+                <div class="bot-avatar">🐲</div>
+              </div>
+              <div class="bubble-col">
+                <div class="message-bubble bot-bubble">
+                  <div class="bubble-text">{{ msg.text }}</div>
+
+                  <div class="bubble-footer">
+                    <button
+                      type="button"
+                      class="speak-btn"
+                      (click)="speakMessage(msg)"
+                      aria-label="Listen to message read aloud"
+                      title="Listen">
+                      <span>🔊 Listen</span>
+                    </button>
+
+                    @if (msg.responseTimeMs !== undefined) {
+                      <span class="latency-badge" title="Response processing latency">
+                        ⚡ {{ msg.responseTimeMs }}ms
+                      </span>
+                    }
+
+                    @if (msg.starsAwarded && msg.starsAwarded > 0) {
+                      <span class="star-reward-badge">⭐ +{{ msg.starsAwarded }} Star!</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Child Message -->
+            @if (msg.sender === 'child') {
+              <div class="bubble-col child-bubble-col">
+                <div class="message-bubble child-bubble">
+                  <div class="bubble-text">{{ msg.text }}</div>
+                  <div class="child-timestamp">{{ msg.timestamp | date:'shortTime' }}</div>
+                </div>
+              </div>
+              <div class="avatar-col">
+                <div class="child-avatar-chat">{{ selectedAvatar().emoji }}</div>
+              </div>
+            }
+
+          </div>
+        }
+
+        <!-- Typing Indicator -->
+        @if (isLoading()) {
+          <div class="message-row bot-row typing-row" aria-label="Buddy is thinking...">
+            <div class="avatar-col"><div class="bot-avatar">🐲</div></div>
+            <div class="message-bubble bot-bubble typing-bubble">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="typing-text">Buddy is thinking...</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- ================= QUICK-REPLY BUTTONS ================= -->
+      @if (suggestedReplies().length > 0) {
+        <div class="quick-replies-tray" aria-label="Quick reply options for easy tapping">
+          <span class="quick-reply-label">Tap to reply:</span>
+          <div class="chips-row">
+            @for (reply of suggestedReplies(); track reply) {
+              <button
+                type="button"
+                class="reply-chip"
+                (click)="onQuickReplyClick(reply)"
+                [disabled]="isLoading()"
+                aria-label="Answer with {{ reply }}">
+                <span>{{ reply }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ================= INPUT FORM BAR ================= -->
+      <footer class="input-bar" role="form" aria-label="Type your message">
+        <input
+          type="text"
+          class="chat-input"
+          placeholder="Type your message or click colorful words above..."
+          [ngModel]="inputText()"
+          (ngModelChange)="inputText.set($event)"
+          (keydown.enter)="onSendClick()"
+          [disabled]="isLoading()"
+          aria-label="Message text to Buddy" />
+
+        <button
+          type="button"
+          class="send-btn"
+          (click)="onSendClick()"
+          [disabled]="isLoading() || !inputText().trim()"
+          aria-label="Send message">
+          <span class="send-icon">🚀</span>
+          <span class="send-text">Send</span>
+        </button>
+      </footer>
+    </section>
+  </main>
+
+  <!-- ================= CELEBRATION STAR BANNER ================= -->
+  @if (starCelebration()) {
+    <div class="star-toast" role="status" aria-live="assertive">
+      <span class="toast-star">⭐</span>
+      <span class="toast-title">SUPER JOB! STAR EARNED!</span>
+      <span class="toast-star">🌟</span>
+    </div>
+  }
+
+  <!-- ================= LEVEL UP CELEBRATION MODAL ================= -->
+  @if (levelUpAlert(); as alert) {
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="levelUpTitle">
+      <div class="modal-card levelup-card">
+        <div class="levelup-badge">🏆 LEVEL UP! 🌟</div>
+        <div class="levelup-icon">🚀</div>
+        <h2 id="levelUpTitle" class="levelup-title">You Did It, Superstar!</h2>
+        <p class="levelup-message">{{ alert }}</p>
+
+        <button type="button" class="btn-primary big-bounce-btn" (click)="closeLevelUpAlert()">
+          <span>Yay! Keep Playing! 🎉</span>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ================= PROGRESS SUMMARY MODAL ================= -->
+  @if (showProgressModal()) {
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="progressTitle">
+      <div class="modal-card progress-card">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <span class="modal-icon">📊</span>
+            <h2 id="progressTitle" class="modal-title">Learning Journey</h2>
+          </div>
+          <button type="button" class="close-x-btn" (click)="toggleProgressModal()" aria-label="Close progress modal">✖</button>
+        </div>
+
+        @if (progressSummary(); as summary) {
+          <div class="progress-stats-grid">
+            <div class="stat-box stat-stars">
+              <span class="stat-number">⭐ {{ totalStars() }}</span>
+              <span class="stat-lbl">Stars Collected</span>
+            </div>
+            <div class="stat-box stat-activities">
+              <span class="stat-number">🎯 {{ summary.totalActivitiesCompleted }}</span>
+              <span class="stat-lbl">Quizzes Done</span>
+            </div>
+            <div class="stat-box stat-proficiency">
+              <span class="stat-number">📈 {{ summary.averageProficiency }}%</span>
+              <span class="stat-lbl">Avg Proficiency</span>
+            </div>
+          </div>
+
+          <div class="topics-list">
+            <h3 class="topics-heading">Topic Mastery:</h3>
+            @for (t of summary.topics; track t.id) {
+              <div class="topic-row">
+                <div class="topic-meta">
+                  <span class="topic-name">{{ t.topic }}</span>
+                  <span class="topic-badge badge-{{ t.masteryLabel.toLowerCase() }}">{{ t.masteryLabel }}</span>
+                  <span class="topic-pct">{{ t.proficiencyScore }}%</span>
+                </div>
+                <div class="progress-track" role="progressbar" [attr.aria-valuenow]="t.proficiencyScore" aria-valuemin="0" aria-valuemax="100">
+                  <div class="progress-fill" [style.width.%]="t.proficiencyScore"></div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="no-prog">Start answering quizzes with Buddy to see your shiny stars here!</p>
+        }
+
+        <button type="button" class="btn-primary" (click)="toggleProgressModal()">
+          <span>Back to Learning 🚀</span>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ================= WELCOME / PROFILE SETUP MODAL ================= -->
+  @if (showWelcomeModal()) {
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" (click)="closeWelcomeModal()">
+      <div class="modal-card welcome-card" (click)="$event.stopPropagation()">
+        <!-- Top-Right Cancel Option Button -->
+        <button
+          type="button"
+          id="cancelWelcomeModalBtn"
+          class="welcome-close-btn"
+          (click)="closeWelcomeModal()"
+          aria-label="Cancel and close dialog"
+          title="Cancel">
+          <span class="close-x">✕</span>
+        </button>
+
+        <div class="welcome-header">
+          <div class="welcome-mascot">🐲</div>
+          <h2 id="welcomeTitle" class="welcome-title">Welcome Little Explorer!</h2>
+          <p class="welcome-subtitle">Let's learn English together with fun games and gentle stories!</p>
+        </div>
+
+        <div class="welcome-form">
+          <!-- Choose Avatar -->
+          <label class="form-label">Pick your fun avatar:</label>
+          <div class="avatars-picker" role="radiogroup" aria-label="Select avatar">
+            @for (av of avatars; track av.id) {
+              <button
+                type="button"
+                class="avatar-pick-btn"
+                [class.picked]="selectedAvatar().id === av.id"
+                (click)="selectAvatar(av)"
+                [style.background]="av.bgGradient"
+                [attr.aria-label]="av.name">
+                <span class="pick-emoji">{{ av.emoji }}</span>
+                <span class="pick-name">{{ av.name }}</span>
+              </button>
+            }
+          </div>
+
+          <!-- Name Input -->
+          <div class="form-group">
+            <label for="childNameInput" class="form-label">What is your name?</label>
+            <input
+              id="childNameInput"
+              type="text"
+              class="form-input"
+              placeholder="e.g. Leo, Mia, Oliver"
+              [ngModel]="newChildName()"
+              (ngModelChange)="newChildName.set($event)" />
+          </div>
+
+          <!-- Age / Level Selector -->
+          <div class="form-group">
+            <label class="form-label">How old are you?</label>
+            <div class="age-picker-row">
+              <button
+                type="button"
+                class="age-btn"
+                [class.age-selected]="newChildAge() === 4"
+                (click)="newChildAge.set(4)">
+                <span>🎂 3 - 4 yrs</span>
+                <small>Level 1 (Toddler)</small>
+              </button>
+
+              <button
+                type="button"
+                class="age-btn"
+                [class.age-selected]="newChildAge() === 5"
+                (click)="newChildAge.set(5)">
+                <span>🎈 4 - 5 yrs</span>
+                <small>Level 2 (Learner)</small>
+              </button>
+
+              <button
+                type="button"
+                class="age-btn"
+                [class.age-selected]="newChildAge() === 6"
+                (click)="newChildAge.set(6)">
+                <span>🚀 5 - 6 yrs</span>
+                <small>Level 3 (Explorer)</small>
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="btn-primary start-btn"
+            (click)="submitWelcomeForm()"
+            [disabled]="isLoading()">
+            <span>Start My Adventure! 🌟</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

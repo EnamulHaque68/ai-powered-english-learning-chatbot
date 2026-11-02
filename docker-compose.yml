@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: wonderkids-sqlserver
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SuperSecureChildSafe2026!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Chatbot.API/Dockerfile
+    container_name: wonderkids-api
+    restart: always
+    depends_on:
+      - sqlserver
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=ChildLearningChatbotDb;User Id=sa;Password=SuperSecureChildSafe2026!;TrustServerCertificate=True;MultipleActiveResultSets=True;
+      - Cors__AllowedOrigins__0=http://localhost:80
+      - Cors__AllowedOrigins__1=http://localhost:4200
+      - Cors__AllowedOrigins__2=https://wonderkids.example.com
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: wonderkids-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  sqlserver_data:
